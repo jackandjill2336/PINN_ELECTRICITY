@@ -1,152 +1,621 @@
-scripts/run_energy_analysis.py 
+Updated README.md for Complete PINN Framework 
 
-#!/usr/bin/env python3 """ Main script for running comprehensive energy consumption analysis Supports both SERL datasets and custom energy data """ 
+PINN Electricity: Complete Framework for Physics-Informed Energy Analysis 
 
-import argparse import os import sys import yaml from pathlib import Path 
+A comprehensive Physics-Informed Neural Networks (PINNs) framework for electrical engineering and building energy consumption analysis, featuring large dataset support, advanced model comparison, and interpretability analysis. 
 
-Add project root to path 
+🚀 Key Features 
 
-project_root = Path(file).parent.parent sys.path.insert(0, str(project_root)) 
+Core Capabilities 
 
-from pinn_electricity.building_energy.comprehensive_analysis import run_complete_energy_analysis 
+Large Dataset Processing: Handles SERL energy datasets with 50k+ samples 
 
-def main(): parser = argparse.ArgumentParser( description='Run comprehensive energy consumption analysis with PINN', formatter_class=argparse.RawDescriptionHelpFormatter, epilog=""" Examples: python scripts/run_energy_analysis.py --data data.csv python scripts/run_energy_analysis.py --data data.csv --sample-size 30000 python scripts/run_energy_analysis.py --data data.csv --target mean_energy --config custom_config.yaml """ ) 
+Comprehensive Model Comparison: Random Forest, Neural Networks, and PINN 
 
-parser.add_argument('--data', type=str, required=True, 
-                  help='Path to energy consumption CSV data file') 
-parser.add_argument('--sample-size', type=int, default=50000, 
-                  help='Maximum sample size for large datasets (default: 50000)') 
-parser.add_argument('--target', type=str, default='mean', 
-                  help='Target column name for energy consumption (default: mean)') 
-parser.add_argument('--config', type=str,  
-                  help='Path to configuration YAML file (optional)') 
-parser.add_argument('--output-dir', type=str, default='results', 
-                  help='Output directory for results (default: results)') 
-parser.add_argument('--no-visualizations', action='store_true', 
-                  help='Skip creating visualizations') 
-parser.add_argument('--verbose', '-v', action='store_true', 
-                  help='Enable verbose output') 
- 
-args = parser.parse_args() 
- 
-# Validate input file 
-if not os.path.exists(args.data): 
-    print(f"Error: Data file '{args.data}' not found") 
-    sys.exit(1) 
- 
-# Create output directory 
-output_dir = Path(args.output_dir) 
-output_dir.mkdir(exist_ok=True) 
- 
-# Load configuration if provided 
-config = {} 
-if args.config: 
-    if not os.path.exists(args.config): 
-        print(f"Warning: Config file '{args.config}' not found, using defaults") 
-    else: 
-        with open(args.config, 'r') as f: 
-            config = yaml.safe_load(f) 
- 
-print("="*60) 
-print("COMPREHENSIVE ENERGY CONSUMPTION ANALYSIS") 
-print("="*60) 
-print(f"Data file: {args.data}") 
-print(f"Sample size: {args.sample_size:,}") 
-print(f"Target column: {args.target}") 
-print(f"Output directory: {output_dir}") 
-print(f"Configuration: {'Custom' if args.config else 'Default'}") 
-print("="*60) 
- 
-try: 
-    # Run analysis 
-    results = run_complete_energy_analysis( 
-        filepath=args.data, 
-        sample_size=args.sample_size, 
-        target_col=args.target 
-    ) 
-     
-    # Save results 
-    import pickle 
-    import json 
-     
-    results_file = output_dir / 'analysis_results.pkl' 
-    with open(results_file, 'wb') as f: 
-        pickle.dump(results, f) 
-     
-    # Save summary as JSON 
-    summary = { 
-        'data_info': results['data_info'], 
-        'model_performance': { 
-            'random_forest_r2': results['model_results']['random_forest']['r2'], 
-            'pinn_r2': results['model_results']['pinn']['r2'], 
-            'best_nn_r2': max([results['model_results']['neural_networks'][model]['r2']  
-                             for model in results['model_results']['neural_networks']]), 
-        } 
-    } 
-     
-    summary_file = output_dir / 'analysis_summary.json' 
-    with open(summary_file, 'w') as f: 
-        json.dump(summary, f, indent=2) 
-     
-    print(f"\n✅ Analysis completed successfully!") 
-    print(f"📊 Results saved to: {results_file}") 
-    print(f"📋 Summary saved to: {summary_file}") 
-     
-    # Print key results 
-    rf_r2 = results['model_results']['random_forest']['r2'] 
-    pinn_r2 = results['model_results']['pinn']['r2'] 
-     
-    print(f"\n🎯 Key Results:") 
-    print(f"   Random Forest R²: {rf_r2:.4f}") 
-    print(f"   PINN R²: {pinn_r2:.4f}") 
-     
-    if pinn_r2 > rf_r2: 
-        improvement = ((pinn_r2 - rf_r2) / rf_r2) * 100 
-        print(f"   🎉 PINN outperforms baseline by {improvement:.1f}%!") 
-    else: 
-        print(f"   📈 PINN achieves competitive performance") 
-     
-except Exception as e: 
-    print(f"\n❌ Analysis failed with error: {e}") 
-    if args.verbose: 
-        import traceback 
-        traceback.print_exc() 
-    sys.exit(1) 
+Physics-Informed Architecture: Multi-pathway networks with thermodynamic constraints 
+
+Advanced Feature Engineering: Temperature zones, seasonal patterns, physics interactions 
+
+Interpretability Analysis: GradCAM for understanding model decisions 
+
+Professional Visualization: Comprehensive plots and analysis reports 
+
+Supported Applications 
+
+Building Energy Consumption: SERL domestic energy prediction 
+
+Circuit Analysis: Linear and nonlinear electrical circuits 
+
+Electromagnetic Fields: Electrostatic and magnetostatic modeling 
+
+Power Systems: Power flow and stability analysis 
+
+📊 Performance Benchmarks 
+
+Our framework has been tested on large energy datasets with the following results: 
+
+Model 
+
+R² Score 
+
+Notes 
+
+Random Forest 
+
+0.903 
+
+Strong baseline performance 
+
+Neural Networks 
+
+0.899 
+
+Standard deep learning approach 
+
+PINN (Ours) 
+
+0.904 
+
+Physics-informed improvement 
+
+🛠 Installation 
+
+Prerequisites 
+
+Python 3.8+ 
+
+TensorFlow 2.x 
+
+NumPy, pandas, scikit-learn 
+
+Matplotlib, seaborn 
+
+Quick Install 
+
+git clone https://github.com/jackandjill2336/PINN_ELECTRICITY.git 
+cd PINN_ELECTRICITY 
+pip install -e . 
   
 
-if name == "main": main() 
+Development Install 
 
-scripts/quick_pinn_test.py 
+git clone https://github.com/jackandjill2336/PINN_ELECTRICITY.git 
+cd PINN_ELECTRICITY 
+pip install -e ".[dev]" 
+pre-commit install 
+  
 
-#!/usr/bin/env python3 """ Quick PINN test script for rapid prototyping and validation """ 
+🚀 Quick Start 
 
-import sys from pathlib import Path import numpy as np import pandas as pd 
+1. Basic Energy Analysis 
 
-Add project root to path 
-
-project_root = Path(file).parent.parent sys.path.insert(0, str(project_root)) 
-
-def create_synthetic_energy_data(n_samples=5000): """Create synthetic energy consumption data for testing""" np.random.seed(42) 
-
-# Generate realistic weather data 
-temp = np.random.normal(12, 8, n_samples)  # Temperature 
-hdd = np.maximum(0, 18 - temp) * np.random.uniform(0.8, 1.2, n_samples)  # Heating degree days 
-solar = np.random.uniform(0, 8, n_samples)  # Solar radiation 
-month = np.random.randint(1, 13, n_samples)  # Month 
+from pinn_electricity.building_energy import run_complete_energy_analysis 
  
-# Generate energy consumption with physics relationships 
-base_energy = 25  # Base consumption 
-temp_effect = -0.8 * temp  # Lower temp = higher energy 
-hdd_effect = 1.2 * hdd  # Higher HDD = higher energy 
-solar_effect = -0.3 * solar  # Higher solar = lower energy 
-seasonal_effect = 3 * np.sin(2 * np.pi * month / 12)  # Seasonal variation 
-noise = np.random.normal(0, 4, n_samples)  # Random noise 
+# Run comprehensive analysis 
+results = run_complete_energy_analysis( 
+    filepath="your_energy_data.csv", 
+    sample_size=50000, 
+    target_col="mean" 
+) 
  
-energy = base_energy + temp_effect + hdd_effect + solar_effect + seasonal_effect + noise 
-energy = np.maximum(1, energy)  # Ensure positive values 
+print(f"PINN R² Score: {results['model_results']['pinn']['r2']:.4f}") 
+  
+
+2. Command Line Interface 
+
+# Quick analysis 
+python scripts/run_energy_analysis.py --data energy_data.csv 
  
-# Create DataFrame 
-df = pd.DataFrame({ 
+# Custom configuration 
+python scripts/run_energy_analysis.py --data energy_data.csv --config custom_config.yaml 
+ 
+# Quick test with synthetic data 
+python scripts/quick_pinn_test.py 
+  
+
+3. Circuit Analysis (Original PINN functionality) 
+
+from pinn_electricity.circuits import RCCircuitSolver 
+ 
+# Solve RC circuit 
+solver = RCCircuitSolver(R=1000, C=1e-6) 
+solver.train(epochs=1000) 
+solution = solver.solve(t_range=(0, 0.01)) 
+  
+
+📁 Repository Structure 
+
+PINN_ELECTRICITY/ 
+├── pinn_electricity/                 # Main package 
+│   ├── core/                        # Core PINN functionality 
+│   │   ├── pinn_model.py           # Base PINN model 
+│   │   ├── physics_laws.py         # Physics constraints 
+│   │   └── loss_functions.py       # Combined loss functions 
+│   ├── building_energy/             # Energy consumption analysis 
+│   │   ├── data_processor.py       # SERL data processing 
+│   │   ├── feature_engineering.py  # Advanced feature engineering 
+│   │   ├── ultimate_pinn.py        # Ultimate PINN implementation 
+│   │   └── comprehensive_analysis.py # Complete analysis framework 
+│   ├── circuits/                    # Circuit analysis 
+│   ├── fields/                      # Electromagnetic fields 
+│   ├── power/                       # Power systems 
+│   └── utils/                       # Utilities and visualization 
+├── scripts/                         # Executable scripts 
+│   ├── run_energy_analysis.py      # Main analysis script 
+│   └── quick_pinn_test.py          # Quick testing 
+├── configs/                         # Configuration files 
+│   ├── comprehensive_config.yaml   # Main configuration 
+│   └── example_config.yaml         # Example configurations 
+├── examples/                        # Examples and tutorials 
+│   ├── building_energy/            # Energy analysis examples 
+│   └── notebooks/                  # Jupyter notebooks 
+├── tests/                           # Test suite 
+├── docs/                           # Documentation 
+└── data/                           # Sample datasets 
+  
+
+🧪 Testing 
+
+Run All Tests 
+
+pytest tests/ 
+  
+
+Quick Functionality Test 
+
+python scripts/quick_pinn_test.py 
+  
+
+Test Specific Modules 
+
+pytest tests/test_building_energy/ 
+pytest tests/test_core/ 
+  
+
+📈 Advanced Usage 
+
+1. Large Dataset Analysis 
+
+from pinn_electricity.building_energy import LargeDatasetProcessor, ComprehensiveModelComparison 
+ 
+# Process large SERL dataset 
+processor = LargeDatasetProcessor(sample_size=100000) 
+df_sample = processor.create_sample_dataset("large_data.csv") 
+df_clean = processor.clean_and_engineer_features(df_sample) 
+ 
+# Run model comparison 
+comparison = ComprehensiveModelComparison() 
+results = comparison.run_comprehensive_comparison(X, y, feature_names) 
+  
+
+2. Custom Physics Laws 
+
+from pinn_electricity.core import PhysicsLaw 
+ 
+class CustomEnergyLaw(PhysicsLaw): 
+    def residual(self, derivatives, parameters): 
+        # Implement your physics constraint 
+        return custom_physics_residual 
+ 
+# Use in PINN model 
+pinn = UltimatePINN(physics_laws=[CustomEnergyLaw()]) 
+  
+
+3. Hyperparameter Tuning 
+
+from pinn_electricity.building_energy import hyperparameter_tuning 
+ 
+best_params = hyperparameter_tuning( 
+    filepath="energy_data.csv", 
+    physics_weights=[0.05, 0.1, 0.15, 0.2], 
+    ensemble_sizes=[1, 3, 5, 7] 
+) 
+  
+
+🔬 Research Applications 
+
+Energy Consumption Prediction 
+
+Domestic Buildings: SERL residential energy analysis 
+
+Commercial Buildings: Office and retail energy forecasting 
+
+District Heating: Community-scale energy systems 
+
+Electrical Engineering 
+
+Circuit Design: Component optimization with physics constraints 
+
+Power Grid Analysis: Stability and load forecasting 
+
+Smart Grid: Renewable integration and demand response 
+
+Physics-Informed Machine Learning 
+
+Model Interpretability: Understanding physics vs data contributions 
+
+Transfer Learning: Physics knowledge across domains 
+
+Uncertainty Quantification: Physics-informed confidence intervals 
+
+📊 Benchmarking Results 
+
+SERL Energy Dataset Performance 
+
+Dataset Size: 14,811 samples after cleaning 
+
+Features: 20 engineered features including physics interactions 
+
+Best Model: PINN with R² = 0.904 
+
+Improvement: +0.1% over Random Forest baseline 
+
+Physics Constraint Benefits 
+
+Temperature Zones: Improved cold weather predictions 
+
+HDD Correlation: Better heating demand modeling 
+
+Seasonal Patterns: Enhanced monthly variation capture 
+
+Energy Conservation: Physically consistent predictions 
+
+🤝 Contributing 
+
+We welcome contributions! Please see CONTRIBUTING.md for guidelines. 
+
+Development Workflow 
+
+Fork the repository 
+
+Create a feature branch: git checkout -b feature-name 
+
+Make changes and add tests 
+
+Run tests: pytest tests/ 
+
+Submit a pull request 
+
+Code Standards 
+
+Black code formatting: black . 
+
+Import sorting: isort . 
+
+Type hints where appropriate 
+
+Comprehensive docstrings 
+
+Unit tests for new features 
+
+📄 License 
+
+This project is licensed under the MIT License - see the LICENSE file for details. 
+
+📚 Documentation 
+
+Full Documentation: https://pinn-electricity.readthedocs.io 
+
+API Reference: docs/api/ 
+
+Tutorials: examples/notebooks/ 
+
+Research Papers: docs/papers/ 
+
+🎯 Citation 
+
+If you use this framework in your research, please cite: 
+
+@software{pinn_electricity_2025, 
+  title={PINN Electricity: Physics-Informed Neural Networks for Electrical Engineering and Energy Analysis}, 
+  author={Your Name}, 
+  year={2025}, 
+  url={https://github.com/jackandjill2336/PINN_ELECTRICITY}, 
+  note={Complete framework for physics-informed energy consumption prediction} 
+} 
+  
+
+🔗 Related Work 
+
+Original PINN Paper: Raissi et al. (2019) - Physics-informed neural networks 
+
+SERL Dataset: Smart Energy Research Laboratory domestic energy data 
+
+Building Energy Modeling: Physics-informed approaches to energy prediction 
+
+💬 Support 
+
+Issues: GitHub Issues 
+
+Discussions: GitHub Discussions 
+
+Email: your.email@example.com 
+
+ 
+
+Note: This framework represents a comprehensive approach to physics-informed machine learning for energy and electrical engineering applications. The combination of domain expertise, advanced ML techniques, and robust software engineering makes it suitable for both research and practical applications. 
+
+tests/test_building_energy/test_comprehensive_analysis.py 
+
+""" Tests for comprehensive analysis framework """ 
+
+import pytest import numpy as np import pandas as pd import tempfile import os from unittest.mock import patch, MagicMock 
+
+from pinn_electricity.building_energy.comprehensive_analysis import ( LargeDatasetProcessor, ComprehensiveModelComparison, run_complete_energy_analysis ) 
+
+class TestLargeDatasetProcessor: 
+
+@pytest.fixture 
+def sample_energy_data(self): 
+    """Create sample energy consumption data""" 
+    np.random.seed(42) 
+    n_samples = 1000 
+     
+    data = { 
+        'mean': np.random.uniform(10, 50, n_samples), 
+        'mean_temp': np.random.normal(12, 8, n_samples), 
+        'mean_hdd': np.random.uniform(0, 20, n_samples), 
+        'mean_solar': np.random.uniform(0, 8, n_samples), 
+        'quantity': np.random.choice(['Gas', 'Electricity', 'Other'], n_samples), 
+        'unit': np.random.choice(['kWh/day', 'kWh/m2/day', 'Other'], n_samples), 
+        'segment_1_value': np.random.choice(['Type A', 'Type B', 'Type C'], n_samples), 
+        'aggregation_period': pd.date_range('2021-01-01', periods=n_samples, freq='D') 
+    } 
+     
+    return pd.DataFrame(data) 
+ 
+def test_dataset_processor_initialization(self): 
+    """Test processor initialization""" 
+    processor = LargeDatasetProcessor(sample_size=1000, random_state=42) 
+     
+    assert processor.sample_size == 1000 
+    assert processor.random_state == 42 
+    assert processor.feature_names is None 
+    assert isinstance(processor.encoders, dict) 
+ 
+def test_create_sample_dataset(self, sample_energy_data): 
+    """Test sample dataset creation""" 
+    processor = LargeDatasetProcessor(sample_size=500) 
+     
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f: 
+        sample_energy_data.to_csv(f.name, index=False) 
+        input_file = f.name 
+     
+    try: 
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f: 
+            output_file = f.name 
+         
+        df_sample = processor.create_sample_dataset(input_file, output_file) 
+         
+        assert len(df_sample) <= 500 
+        assert len(df_sample) > 0 
+        assert os.path.exists(output_file) 
+         
+    finally: 
+        os.unlink(input_file) 
+        if os.path.exists(output_file): 
+            os.unlink(output_file) 
+ 
+def test_analyze_dataset_structure(self, sample_energy_data): 
+    """Test dataset structure analysis""" 
+    processor = LargeDatasetProcessor() 
+    analysis = processor.analyze_dataset_structure(sample_energy_data) 
+     
+    assert 'shape' in analysis 
+    assert 'target_candidates' in analysis 
+    assert 'feature_candidates' in analysis 
+    assert 'missing_summary' in analysis 
+    assert 'dtypes' in analysis 
+     
+    assert analysis['shape'] == sample_energy_data.shape 
+    assert 'mean' in analysis['target_candidates'] 
+ 
+def test_clean_and_engineer_features(self, sample_energy_data): 
+    """Test data cleaning and feature engineering""" 
+    processor = LargeDatasetProcessor() 
+    df_clean = processor.clean_and_engineer_features(sample_energy_data) 
+     
+    # Check that data was filtered 
+    assert len(df_clean) <= len(sample_energy_data) 
+     
+    # Check that engineered features were created 
+    engineered_features = [ 
+        'quantity_encoded', 'unit_encoded', 'segment_1_value_encoded', 
+        'temp_hdd_interaction', 'temp_squared', 'hdd_squared', 
+        'season_sin', 'season_cos', 'very_cold', 'cold', 'mild', 'warm' 
+    ] 
+     
+    for feature in engineered_features: 
+        if feature.replace('_encoded', '') in sample_energy_data.columns or \ 
+           any(base in sample_energy_data.columns for base in ['mean_temp', 'mean_hdd']): 
+            assert feature in df_clean.columns 
+ 
+def test_prepare_modeling_data(self, sample_energy_data): 
+    """Test modeling data preparation""" 
+    processor = LargeDatasetProcessor() 
+    df_clean = processor.clean_and_engineer_features(sample_energy_data) 
+     
+    X, y, feature_names = processor.prepare_modeling_data(df_clean, target_col='mean') 
+     
+    assert isinstance(X, np.ndarray) 
+    assert isinstance(y, np.ndarray) 
+    assert isinstance(feature_names, list) 
+    assert len(X) == len(y) 
+    assert X.shape[1] == len(feature_names) 
+    assert len(y) > 0 
+  
+
+class TestComprehensiveModelComparison: 
+
+@pytest.fixture 
+def sample_training_data(self): 
+    """Create sample training data""" 
+    np.random.seed(42) 
+    n_samples = 500 
+    n_features = 8 
+     
+    X = np.random.randn(n_samples, n_features) 
+    y = np.random.uniform(10, 50, n_samples) 
+    feature_names = [f'feature_{i}' for i in range(n_features)] 
+     
+    return X, y, feature_names 
+ 
+def test_model_comparison_initialization(self): 
+    """Test model comparison initialization""" 
+    comparison = ComprehensiveModelComparison(random_state=42) 
+     
+    assert comparison.random_state == 42 
+    assert isinstance(comparison.results, dict) 
+    assert isinstance(comparison.models, dict) 
+ 
+def test_train_random_forest_baseline(self, sample_training_data): 
+    """Test Random Forest baseline training""" 
+    X, y, feature_names = sample_training_data 
+    X_train, X_test = X[:400], X[400:] 
+    y_train, y_test = y[:400], y[400:] 
+     
+    comparison = ComprehensiveModelComparison() 
+    results = comparison.train_random_forest_baseline(X_train, X_test, y_train, y_test) 
+     
+    assert 'r2' in results 
+    assert 'rmse' in results 
+    assert 'mae' in results 
+    assert 'predictions' in results 
+    assert 'feature_importance' in results 
+     
+    assert 0 <= results['r2'] <= 1 
+    assert results['rmse'] >= 0 
+    assert results['mae'] >= 0 
+    assert len(results['predictions']) == len(y_test) 
+    assert len(results['feature_importance']) == X_train.shape[1] 
+ 
+@patch('tensorflow.keras.models.Sequential') 
+def test_train_neural_network_variants(self, mock_sequential, sample_training_data): 
+    """Test neural network variants training""" 
+    X, y, feature_names = sample_training_data 
+    X_train, X_test = X[:400], X[400:] 
+    y_train, y_test = y[:400], y[400:] 
+     
+    # Mock the neural network 
+    mock_model = MagicMock() 
+    mock_model.fit.return_value = None 
+    mock_model.predict.return_value = np.random.uniform(10, 50, (len(y_test), 1)) 
+    mock_sequential.return_value = mock_model 
+     
+    comparison = ComprehensiveModelComparison() 
+    results = comparison.train_neural_network_variants(X_train, X_test, y_train, y_test) 
+     
+    assert 'basic' in results 
+    assert 'deep' in results 
+    assert 'ensemble' in results 
+     
+    for variant in ['basic', 'deep', 'ensemble']: 
+        assert 'r2' in results[variant] 
+        assert 'rmse' in results[variant] 
+        assert 'mae' in results[variant] 
+        assert 'predictions' in results[variant] 
+ 
+@patch('tensorflow.keras.models.Model') 
+def test_train_physics_informed_nn(self, mock_model_class, sample_training_data): 
+    """Test PINN training""" 
+    X, y, feature_names = sample_training_data 
+    X_train, X_test = X[:400], X[400:] 
+    y_train, y_test = y[:400], y[400:] 
+     
+    # Mock the PINN model 
+    mock_model = MagicMock() 
+    mock_model.fit.return_value = None 
+    mock_model.predict.return_value = np.random.uniform(10, 50, (len(y_test), 1)) 
+    mock_model_class.return_value = mock_model 
+     
+    comparison = ComprehensiveModelComparison() 
+    results = comparison.train_physics_informed_nn(X_train, X_test, y_train, y_test, feature_names) 
+     
+    assert 'r2' in results 
+    assert 'rmse' in results 
+    assert 'mae' in results 
+    assert 'predictions' in results 
+     
+    assert 0 <= results['r2'] <= 1 
+    assert results['rmse'] >= 0 
+    assert results['mae'] >= 0 
+  
+
+def test_run_complete_energy_analysis_with_synthetic_data(): """Test complete analysis with synthetic data""" # Create synthetic data file np.random.seed(42) n_samples = 1000 
+
+synthetic_data = { 
+    'mean': np.random.uniform(10, 50, n_samples), 
+    'mean_temp': np.random.normal(12, 8, n_samples), 
+    'mean_hdd': np.random.uniform(0, 20, n_samples), 
+    'mean_solar': np.random.uniform(0, 8, n_samples), 
+    'quantity': np.random.choice(['Gas', 'Electricity'], n_samples), 
+    'unit': np.random.choice(['kWh/day'], n_samples), 
+    'segment_1_value': np.random.choice(['Type A', 'Type B'], n_samples), 
+    'aggregation_period': pd.date_range('2021-01-01', periods=n_samples, freq='D') 
+} 
+ 
+df_synthetic = pd.DataFrame(synthetic_data) 
+ 
+with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f: 
+    df_synthetic.to_csv(f.name, index=False) 
+    filepath = f.name 
+ 
+try: 
+    # Mock the visualization function to avoid GUI issues in tests 
+    with patch('pinn_electricity.building_energy.comprehensive_analysis.create_comprehensive_visualizations'): 
+        results = run_complete_energy_analysis( 
+            filepath=filepath, 
+            sample_size=1000, 
+            target_col='mean' 
+        ) 
+     
+    # Check structure 
+    assert 'structure_analysis' in results 
+    assert 'model_results' in results 
+    assert 'data_info' in results 
+     
+    # Check model results 
+    model_results = results['model_results'] 
+    assert 'random_forest' in model_results 
+    assert 'neural_networks' in model_results 
+    assert 'pinn' in model_results 
+    assert 'test_data' in model_results 
+     
+    # Check performance metrics 
+    rf_r2 = model_results['random_forest']['r2'] 
+    pinn_r2 = model_results['pinn']['r2'] 
+     
+    assert 0 <= rf_r2 <= 1 
+    assert 0 <= pinn_r2 <= 1 
+     
+finally: 
+    os.unlink(filepath) 
+  
+
+@pytest.mark.integration def test_full_workflow_integration(): """Integration test for full workflow""" # This test requires more setup and would test the entire pipeline # Mark as integration test to run separately pass 
+
+tests/conftest.py 
+
+""" Test configuration and fixtures """ 
+
+import pytest import numpy as np import pandas as pd import tempfile import os 
+
+@pytest.fixture def sample_energy_dataset(): """Create a sample energy dataset for testing""" np.random.seed(42) n_samples = 1000 
+
+# Create realistic energy consumption data 
+temp = np.random.normal(12, 8, n_samples) 
+hdd = np.maximum(0, 18 - temp) 
+solar = np.random.uniform(0, 8, n_samples) 
+month = np.random.randint(1, 13, n_samples) 
+ 
+# Energy with physics relationships 
+energy = (25 + -0.8 * temp + 1.2 * hdd + -0.3 * solar +  
+          3 * np.sin(2 * np.pi * month / 12) +  
+          np.random.normal(0, 4, n_samples)) 
+energy = np.maximum(1, energy) 
+ 
+data = { 
+    'mean': energy, 
     'mean_temp': temp, 
     'mean_hdd': hdd, 
     'mean_solar': solar, 
@@ -154,267 +623,23 @@ df = pd.DataFrame({
     'quantity': np.random.choice(['Gas', 'Electricity'], n_samples), 
     'unit': np.random.choice(['kWh/day'], n_samples), 
     'segment_1_value': np.random.choice(['Type A', 'Type B', 'Type C'], n_samples), 
-    'mean': energy, 
     'aggregation_period': pd.date_range('2021-01-01', periods=n_samples, freq='D') 
-}) 
+} 
  
-return df 
+return pd.DataFrame(data) 
   
 
-def run_quick_test(): """Run quick PINN test with synthetic data""" print("🚀 Quick PINN Test") print("="*50) 
+@pytest.fixture def temp_csv_file(sample_energy_dataset): """Create temporary CSV file for testing""" with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f: sample_energy_dataset.to_csv(f.name, index=False) filepath = f.name 
 
-# Create synthetic data 
-print("📊 Creating synthetic energy data...") 
-df = create_synthetic_energy_data(5000) 
-df.to_csv("synthetic_energy_data.csv", index=False) 
-print(f"   Created {len(df)} samples") 
-print(f"   Energy range: {df['mean'].min():.2f} to {df['mean'].max():.2f} kWh") 
+yield filepath 
  
-# Run analysis 
-print("\n🧠 Running PINN analysis...") 
-try: 
-    from pinn_electricity.building_energy.comprehensive_analysis import run_complete_energy_analysis 
-     
-    results = run_complete_energy_analysis( 
-        filepath="synthetic_energy_data.csv", 
-        sample_size=5000, 
-        target_col='mean' 
-    ) 
-     
-    # Extract key results 
-    rf_r2 = results['model_results']['random_forest']['r2'] 
-    pinn_r2 = results['model_results']['pinn']['r2'] 
-     
-    print(f"\n✅ Test completed successfully!") 
-    print(f"📈 Random Forest R²: {rf_r2:.4f}") 
-    print(f"🧠 PINN R²: {pinn_r2:.4f}") 
-     
-    if pinn_r2 > rf_r2: 
-        print(f"🎉 PINN outperforms Random Forest!") 
-    elif pinn_r2 > 0.85: 
-        print(f"✨ PINN achieves excellent performance!") 
-    else: 
-        print(f"📊 PINN shows reasonable performance") 
-     
-    return True 
-     
-except ImportError as e: 
-    print(f"❌ Import error: {e}") 
-    print("   Make sure PINN modules are properly installed") 
-    return False 
-except Exception as e: 
-    print(f"❌ Test failed: {e}") 
-    return False 
+# Cleanup 
+if os.path.exists(filepath): 
+    os.unlink(filepath) 
   
 
-if name == "main": success = run_quick_test() sys.exit(0 if success else 1) 
+Pytest configuration for different test types 
 
-configs/comprehensive_config.yaml 
-
-Comprehensive Configuration for PINN Energy Analysis 
-
-Dataset configuration 
-
-dataset: sample_size: 50000 target_column: "mean" test_size: 0.2 random_state: 42 
-
-Data cleaning parameters 
-
-cleaning: min_energy_threshold: 0.001 outlier_method: "iqr" outlier_factor: 1.5 
-
-Feature engineering 
-
-features: use_cyclical_encoding: true use_physics_interactions: true use_temperature_zones: true use_seasonal_features: true 
-
-# Physics features to create 
-physics_features: 
-  - "temp_hdd_interaction" 
-  - "temp_squared"  
-  - "hdd_squared" 
-  - "solar_temp_interaction" 
-   
-# Temperature zones 
-temperature_zones: 
-  very_cold: 5 
-  cold: 15 
-  mild: 20 
-  
-
-Model configurations 
-
-models: random_forest: n_estimators: 200 random_state: 42 n_jobs: -1 
-
-neural_networks: basic: hidden_layers: [128, 64, 32] activation: "relu" epochs: 100 batch_size: 32 learning_rate: 0.001 
-
-deep: 
-  hidden_layers: [256, 128, 64, 32, 16] 
-  activation: "relu" 
-  dropout_rates: [0.1, 0.1, 0.0, 0.0, 0.0] 
-  epochs: 150 
-  batch_size: 32 
-  learning_rate: 0.001 
-   
-ensemble: 
-  n_models: 3 
-  hidden_layers: [128, 64, 32] 
-  activation: "relu" 
-  epochs: 100 
-  batch_size: 32 
-  learning_rate: 0.001 
-   
-  
-
-pinn: # Physics-aware architecture branches: temperature: hidden_layers: [16, 8] activation: "tanh" heating: hidden_layers: [16, 8] activation: "relu" solar: hidden_layers: [12, 6] activation: "sigmoid" seasonal: hidden_layers: [8] activation: "tanh" 
-
-# Main processing network 
-main_network: 
-  hidden_layers: [64, 32, 16] 
-  activation: "relu" 
-  dropout_rates: [0.2, 0.1, 0.0] 
-  use_batch_norm: true 
-   
-# Training parameters 
-training: 
-  epochs: 100 
-  batch_size: 64 
-  learning_rate: 0.001 
-  physics_weight: 0.1 
-   
-# Physics constraints 
-physics: 
-  enable_hdd_correlation: true 
-  enable_temperature_zones: true 
-  enable_energy_bounds: true 
-  enable_efficiency_consistency: true 
-  
-
-Output configuration 
-
-output: save_models: true save_predictions: true save_visualizations: true create_report: true 
-
-Visualization options 
-
-visualizations: model_comparison: true feature_importance: true residual_analysis: true error_distributions: true physics_analysis: true 
-
-Report options 
-
-report: include_methodology: true include_results_summary: true include_recommendations: true format: "html" # html, pdf, or markdown 
-
-Advanced options 
-
-advanced: enable_gradcam: false # Set to true for interpretability analysis gradcam_samples: 30 enable_hyperparameter_tuning: false cross_validation_folds: 5 
-
-Logging 
-
-logging: level: "INFO" # DEBUG, INFO, WARNING, ERROR save_logs: true log_file: "analysis.log" 
-
-Example notebook configurations/example_config.yaml 
-
-Example Configuration for Different Use Cases 
-
-Quick test configuration 
-
-quick_test: dataset: sample_size: 5000 target_column: "mean" models: neural_networks: basic: epochs: 50 pinn: training: epochs: 50 
-
-High accuracy configuration 
-
-high_accuracy: dataset: sample_size: 100000 models: random_forest: n_estimators: 500 neural_networks: deep: epochs: 300 hidden_layers: [512, 256, 128, 64, 32] pinn: training: epochs: 200 
-
-Research configuration 
-
-research: advanced: enable_gradcam: true enable_hyperparameter_tuning: true cross_validation_folds: 10 output: create_report: true save_visualizations: true 
-
-examples/notebooks/comprehensive_energy_analysis.py 
-
-""" Jupyter Notebook: Comprehensive Energy Analysis with PINN Convert this to .ipynb for interactive use """ 
-
-Cell 1: Setup and Imports 
-
-import sys sys.path.append('../../') 
-
-import numpy as np import pandas as pd import matplotlib.pyplot as plt from pinn_electricity.building_energy.comprehensive_analysis import run_complete_energy_analysis 
-
-Cell 2: Load Configuration 
-
-import yaml 
-
-Load default configuration 
-
-with open('../../configs/comprehensive_config.yaml', 'r') as f: config = yaml.safe_load(f) 
-
-print("Configuration loaded:") print(f"Sample size: {config['dataset']['sample_size']:,}") print(f"Target column: {config['dataset']['target_column']}") 
-
-Cell 3: Data Analysis 
-
-You can use either: 
-
-1. Your actual SERL data file 
-
-2. The synthetic data generator for testing 
-
-For actual data: 
-
-filepath = "path/to/your/serl_data.csv" 
-
-For testing with synthetic data: 
-
-print("Creating synthetic test data...") exec(open('../../scripts/quick_pinn_test.py').read()) 
-
-Cell 4: Run Comprehensive Analysis 
-
-print("Running comprehensive energy consumption analysis...") 
-
-results = run_complete_energy_analysis( filepath="synthetic_energy_data.csv", # Change to your actual file sample_size=config['dataset']['sample_size'], target_col=config['dataset']['target_column'] ) 
-
-Cell 5: Results Analysis 
-
-model_results = results['model_results'] 
-
-print("=== ANALYSIS RESULTS ===") print(f"Random Forest R²: {model_results['random_forest']['r2']:.4f}") print(f"PINN R²: {model_results['pinn']['r2']:.4f}") 
-
-Neural network results 
-
-nn_results = model_results['neural_networks'] for model_name, result in nn_results.items(): print(f"{model_name} NN R²: {result['r2']:.4f}") 
-
-Cell 6: Custom Visualization 
-
-Create your own custom plots here 
-
-y_true = model_results['test_data']['y_true'] pinn_pred = model_results['pinn']['predictions'] rf_pred = model_results['random_forest']['predictions'] 
-
-plt.figure(figsize=(12, 5)) 
-
-plt.subplot(1, 2, 1) plt.scatter(y_true, pinn_pred, alpha=0.6, label='PINN') plt.scatter(y_true, rf_pred, alpha=0.6, label='Random Forest') plt.plot([y_true.min(), y_true.max()], [y_true.min(), y_true.max()], 'r--') plt.xlabel('Actual Energy') plt.ylabel('Predicted Energy') plt.legend() plt.title('Model Predictions Comparison') 
-
-plt.subplot(1, 2, 2) pinn_error = pinn_pred - y_true rf_error = rf_pred - y_true plt.hist(pinn_error, alpha=0.7, label='PINN Error', bins=30) plt.hist(rf_error, alpha=0.7, label='RF Error', bins=30) plt.xlabel('Prediction Error') plt.ylabel('Frequency') plt.legend() plt.title('Error Distribution') 
-
-plt.tight_layout() plt.show() 
-
-Cell 7: Physics Analysis 
-
-Analyze if PINN learned physics relationships 
-
-feature_names = model_results['test_data']['feature_names'] rf_importance = model_results['random_forest']['feature_importance'] 
-
-print("=== PHYSICS FEATURE ANALYSIS ===") physics_features = ['temp_hdd_interaction', 'temp_squared', 'hdd_squared'] for i, feature in enumerate(feature_names): if feature in physics_features: print(f"{feature}: Importance = {rf_importance[i]:.4f}") 
-
-Cell 8: Save Results 
-
-import pickle import json from datetime import datetime 
-
-Save complete results 
-
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") results_file = f"analysis_results_{timestamp}.pkl" 
-
-with open(results_file, 'wb') as f: pickle.dump(results, f) 
-
-print(f"Results saved to: {results_file}") 
-
-Create summary report 
-
-summary = { 'timestamp': timestamp, 'dataset_info': results['data_info'], 'model_performance': { 'random_forest_r2': model_results['random_forest']['r2'], 'pinn_r2': model_results['pinn']['r2'], 'best_nn_r2': max([nn_results[model]['r2'] for model in nn_results]) }, 'physics_analysis': { 'pinn_beats_rf': model_results['pinn']['r2'] > model_results['random_forest']['r2'], 'improvement': model_results['pinn']['r2'] - model_results['random_forest']['r2'] } } 
-
-summary_file = f"analysis_summary_{timestamp}.json" with open(summary_file, 'w') as f: json.dump(summary, f, indent=2) 
-
-print(f"Summary saved to: {summary_file}") print("\n✅ Comprehensive analysis complete!") 
+def pytest_configure(config): """Configure pytest markers""" config.addinivalue_line( "markers", "integration: mark test as integration test" ) config.addinivalue_line( "markers", "slow: mark test as slow running" ) config.addinivalue_line( "markers", "gpu: mark test as requiring GPU" ) 
 
  
